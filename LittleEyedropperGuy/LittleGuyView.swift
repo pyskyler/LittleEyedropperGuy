@@ -8,11 +8,26 @@
 import SwiftUI
 
 public struct LittleGuyView: View {
+    var littleGuy: LittleGuy
     public var body: some View {
-        Image(systemName: "cat.circle")
-            .resizable()
-            .scaledToFit()
-            .padding()
+
+        ZStack {
+            Circle()
+                .fill(.thinMaterial)
+            
+            
+            littleGuy.image
+                .resizable()
+                .interpolation(.none)
+                .scaledToFit()
+                .padding()
+        }
+        .onTapGesture(perform: littleGuy.runBasicAnimation)
+        .onHover(perform: littleGuy.checkHoverForAnimation)
     }
+        
+}
+
+#Preview {
 }
 

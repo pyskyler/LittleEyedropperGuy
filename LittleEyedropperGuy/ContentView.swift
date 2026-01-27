@@ -9,20 +9,27 @@ import SwiftUI
 
 
 struct ContentView: View {
-    @State private var LittleGuyOpen: Bool = false
+    
+    @Bindable var littleGuy: LittleGuy
+    var panel: LittleGuyPanel<LittleGuyView>
     
     var body: some View {
         
         VStack {
-            Toggle(isOn: $LittleGuyOpen, label: {
+            Toggle(isOn: $littleGuy.isOpen, label: {
                 Text("Toggle Little Guy")
             })
             .toggleStyle(.switch)
-        }.LittleGuyPanel(isPresented: $LittleGuyOpen, content: {LittleGuyView()})
+        }.onChange(of: littleGuy.isOpen, {
+            if littleGuy.isOpen {
+                panel.orderFront(nil)
+                panel.makeKey()
+            } else {
+                panel.close()
+            }
+        })                                                                                                                                                                                 
         
     }
 }
 
-#Preview {
-    ContentView()
-}
+

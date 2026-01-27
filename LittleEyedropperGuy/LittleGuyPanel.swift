@@ -11,13 +11,13 @@ import AppKit
 
 
 class LittleGuyPanel<Content: View>: NSPanel {
-    @Binding var isOpen: Bool
+    private var littleGuy: LittleGuy
 
     init(
         @ViewBuilder view: () -> Content,
-        contentRect: NSRect,
-        isOpen: Binding<Bool>) {
-            self._isOpen = isOpen
+        contentRect: NSRect, littleGuy: LittleGuy) {
+            
+            self.littleGuy = littleGuy
     
             super.init(
                 contentRect: contentRect,
@@ -44,7 +44,7 @@ class LittleGuyPanel<Content: View>: NSPanel {
 
     override func close() {
         super.close()
-        isOpen = false
+        littleGuy.isOpen = false
     }
     
     override var canBecomeKey: Bool {
