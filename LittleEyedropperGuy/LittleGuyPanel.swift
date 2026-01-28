@@ -21,7 +21,7 @@ class LittleGuyPanel<Content: View>: NSPanel {
     
             super.init(
                 contentRect: contentRect,
-                styleMask: [.nonactivatingPanel],
+                styleMask: [.nonactivatingPanel, .utilityWindow],
                 backing: .buffered,
                 defer: false)
                 
@@ -55,3 +55,11 @@ class LittleGuyPanel<Content: View>: NSPanel {
         return true
     }
 }
+
+#Preview("LittleGuyPanel Content") {
+    // In previews, avoid creating NSPanel instances and instead preview the SwiftUI content
+    let littleGuy = LittleGuy()
+    LittleGuyView(littleGuy: littleGuy)
+        .frame(width: 120, height: 120)
+}
+

@@ -26,3 +26,5 @@ struct LittleEyedropperGuyApp: App {
     }
 }
 
+#Preview {
+}
