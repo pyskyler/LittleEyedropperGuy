@@ -5,6 +5,8 @@
 //  Created by Skyler Ficklin on 1/26/26.
 //
 import SwiftUI
+import AppKit
+import Foundation
 
 @Observable class LittleGuyImage {
     var image: Image = Image("stardewcat1")
@@ -19,7 +21,9 @@ import SwiftUI
     let stardewCatAnimation: ImageAnimation
     var failedAnimationTriggersLastSeconds: [Date] = []
     var lastPetTime: Date = Date()
-    let eyeDropper:EyeDropper = EyeDropper()
+    var eyeDropperRunning: Bool = false
+    var eyeDropperColor: Color = .blue
+
     
     init(imageObject: LittleGuyImage = LittleGuyImage() ) {
         self.imageObject = imageObject
@@ -73,8 +77,34 @@ import SwiftUI
         }
     }
     
-    func yarnBallClicked() {
-        eyeDropper.start()
+    func colorSelectedHandler(colorIn: NSColor?) {
+        guard let color: NSColor = colorIn else {
+            print("eyedropper error")
+            return
+        }
+        
+        eyeDropperColor = Color(nsColor: color)
+        
+        guard let rgbColor:NSColor = NSColor(eyeDropperColor).usingColorSpace(NSColorSpace.deviceRGB) else{
+            print("Error converting to generic rgb color space")
+            return
+        }
+        
+        let red = rgbColor.redComponent * 255
+        let redInt = Int(red.rounded())
+        let green = rgbColor.greenComponent * 255
+        let greenInt = Int(green.rounded())
+        let blue = rgbColor.blueComponent * 255
+        let blueInt = Int(blue.rounded())
+        
+        let rgbString: String = String(format: "%3.d, %3.d, %3.d", redInt, greenInt, blueInt)
+        let hexUpperString: String = String(format: "#%02X%02X%02X", redInt, greenInt, blueInt)
+        let hexLowerString: String = String(format: "#%02x%02x%02x", redInt, greenInt, blueInt)
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(rgbString, forType: .string)
+        
+        eyeDropperRunning = false
     }
 }
 

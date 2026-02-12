@@ -31,27 +31,8 @@ public struct LittleGuyView: View {
                 .frame(width: 20, height: 10)
                 .offset(y:-20)
                 .onHover(perform: littleGuy.checkHoverForAnimation)
-            Button(action: {
-                littleGuy.yarnBallClicked()
-            }) {
-                ZStack {
-                    Circle()
-                        .fill(.blue)
-                        .frame(width: 49, height: 49)
-                    
-                    Image("yarn")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width:50, height: 50)
-                        .offset(x:-0.5)
-                }
-            }.offset(x:70, y: 90)
-                .scaleEffect(0.4)
-                .buttonStyle(.plain)
-           
-                
             
-            
+            LittleGuyEyedropperButton(littleGuy: littleGuy)
 
         }
         
