@@ -16,12 +16,8 @@ struct LittleEyedropperGuyApp: App {
         MenuBarExtra(
             "Little Guy",
             systemImage: "cat"
-        ) {
-            ContentView(littleGuy: littleGuy, panel: panel)
-                .frame(width: 300, height: 180)
-            
-        }
-        .menuBarExtraStyle(.window)
+        ) { MenuBarExtraView(littleGuy: littleGuy, panel: panel) }
+//        .menuBarExtraStyle(.window)
         
     }
 }

@@ -23,6 +23,12 @@ import Foundation
     var lastPetTime: Date = Date()
     var eyeDropperRunning: Bool = false
     var eyeDropperColor: Color = .blue
+    enum ColorOptions {
+        case rgb
+        case hexUpper
+        case hexLower
+    }
+    var colorOption: ColorOptions = .rgb
 
     
     init(imageObject: LittleGuyImage = LittleGuyImage() ) {
