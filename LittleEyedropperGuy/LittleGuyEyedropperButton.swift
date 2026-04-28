@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct LittleGuyEyedropperButton: View {
-    var littleGuy: LittleGuy
+    @Environment(LittleGuy.self) private var littleGuy
+    
     var body: some View {
         let colorSampler = NSColorSampler()
         Button(action: {
@@ -18,7 +19,7 @@ struct LittleGuyEyedropperButton: View {
             }}) {
                 ZStack {
                     Circle()
-                        .fill(littleGuy.eyeDropperColor)
+                        .fill(littleGuy.eyeDropperColor.swiftUiColor)
                         .frame(width: 49, height: 49)
                     
                     Image("yarn")
@@ -34,5 +35,5 @@ struct LittleGuyEyedropperButton: View {
 }
 
 #Preview {
-    LittleGuyEyedropperButton(littleGuy: LittleGuy())
+    LittleGuyEyedropperButton()
 }

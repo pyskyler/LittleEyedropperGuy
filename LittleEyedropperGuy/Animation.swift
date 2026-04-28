@@ -5,13 +5,18 @@
 //  Created by Skyler Ficklin on 1/27/26.
 //
 import SwiftUI
+import Foundation
+internal import Combine
 
 class Animation {
         
-    static var isAnimationRunning: Bool = false
+    static var isAnyAnimationRunning: Bool = false
+    @Published var isRunning: Bool = false
     
     func run() {
-        if (!Animation.isAnimationRunning) {
+        if (!Animation.isAnyAnimationRunning) {
+            Animation.isAnyAnimationRunning = true
+            self.isRunning = true
             self.animation()
         }
     }
@@ -22,7 +27,11 @@ class Animation {
 
     func stopAnimation(timer: Timer) {
     timer.invalidate()
-    Animation.isAnimationRunning = false
+    Animation.isAnyAnimationRunning = false
+    }
+    
+    func stopAnimation() {
+    Animation.isAnyAnimationRunning = false
     }
         
 }
@@ -48,8 +57,8 @@ class ImageAnimation: Animation {
     override func animation() {
         var index = 1
         var repeats = 0
-        Animation.isAnimationRunning = true
-        let timer = Timer.scheduledTimer(withTimeInterval: timeIntervalSecs, repeats: true) { (Timer) in
+        
+        _ = Timer.scheduledTimer(withTimeInterval: timeIntervalSecs, repeats: true) { (Timer) in
                 
             self.littleGuyImage.image = Image("\(self.imageSetName)\(index)")
                     
@@ -65,4 +74,26 @@ class ImageAnimation: Animation {
                 
         }
     }
+    
+}
+
+class IconAnimation: Animation {
+    
+    var icon: Image
+    @Published var offset: CGSize
+    var startingOffset: CGSize
+    var endingOffset: CGSize
+    
+    init(icon: Image, startingOffset: CGSize, endingOffset: CGSize) {
+        self.icon = icon
+        self.offset = startingOffset
+        self.startingOffset = startingOffset
+        self.endingOffset = endingOffset
+    }
+     
+    override func animation() {
+        print("running icon animation")
+        offset = endingOffset
+    }
+    
 }

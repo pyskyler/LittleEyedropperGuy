@@ -11,13 +11,13 @@ import AppKit
 
 
 class LittleGuyPanel<Content: View>: NSPanel {
-    private var littleGuy: LittleGuy
+    
+    @Environment(LittleGuy.self) private var littleGuy
 
     init(
         @ViewBuilder view: () -> Content,
-        contentRect: NSRect, littleGuy: LittleGuy) {
+        contentRect: NSRect) {
             
-            self.littleGuy = littleGuy
     
             super.init(
                 contentRect: contentRect,
@@ -58,8 +58,7 @@ class LittleGuyPanel<Content: View>: NSPanel {
 
 #Preview("LittleGuyPanel Content") {
     // In previews, avoid creating NSPanel instances and instead preview the SwiftUI content
-    let littleGuy = LittleGuy()
-    LittleGuyView(littleGuy: littleGuy)
+    LittleGuyView()
         .frame(width: 120, height: 120)
 }
 

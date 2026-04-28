@@ -18,22 +18,31 @@ import Foundation
     let imageObject: LittleGuyImage
     var lastHoverState = false
     var isAnimationRunning: Bool = false
+    var heartAnimationRunning: Bool = true
+    let heartAnimation: IconAnimation
     let stardewCatAnimation: ImageAnimation
     var failedAnimationTriggersLastSeconds: [Date] = []
     var lastPetTime: Date = Date()
     var eyeDropperRunning: Bool = false
-    var eyeDropperColor: Color = .blue
-    enum ColorOptions {
-        case rgb
-        case hexUpper
-        case hexLower
+    var eyeDropperColor: LittleGuyColor = LittleGuyColor(colorIn: .red)
+    var hexFormatting: String {
+        var output = ""
+        if (UserDefaults.standard.bool(forKey: "useHexPound")) {
+            output += "#"
+        }
+        if (UserDefaults.standard.bool(forKey: "useHexUpper")) {
+            output += "FFFFFF"
+        } else {
+            output += "ffffff"
+        }
+        return output
     }
-    var colorOption: ColorOptions = .rgb
 
     
     init(imageObject: LittleGuyImage = LittleGuyImage() ) {
         self.imageObject = imageObject
         self.stardewCatAnimation = ImageAnimation(imageSetName: "stardewcat", numOfImages: 4, numOfRuns: 3, timeIntervalSecs: 0.16, littleGuyImage: imageObject)
+        self.heartAnimation = IconAnimation(icon: Image("heart.fill"), startingOffset: CGSize(width: 25, height: -25), endingOffset: CGSize(width: 25, height: -45))
     }
     
     func checkHoverForAnimation(hoverState: Bool) {
@@ -57,7 +66,8 @@ import Foundation
         let RandomInt = Int.random(in: 1...100)
         if (RandomInt < actionStrength) {
             print("\(RandomInt) < \(actionStrength)")
-            self.stardewCatAnimation.run()
+            // self.stardewCatAnimation.run()
+            self.heartAnimation.run()
             failedAnimationTriggersLastSeconds = []
         } else {
             print("\(RandomInt) > \(actionStrength)")
@@ -77,40 +87,29 @@ import Foundation
             // if more actions have been taken than threshold, trigger
             if (failedAnimationTriggersLastSeconds.count >= (100/(2*actionStrength))) {
                 print("\(failedAnimationTriggersLastSeconds.count) >= \(100/(2*actionStrength))")
-                self.stardewCatAnimation.run()
+                // self.stardewCatAnimation.run()
+                self.heartAnimation.run()
                 failedAnimationTriggersLastSeconds = []
             }
         }
     }
     
     func colorSelectedHandler(colorIn: NSColor?) {
-        guard let color: NSColor = colorIn else {
-            print("eyedropper error")
-            return
-        }
+
         
-        eyeDropperColor = Color(nsColor: color)
+        eyeDropperColor = LittleGuyColor(colorIn: colorIn)
         
-        guard let rgbColor:NSColor = NSColor(eyeDropperColor).usingColorSpace(NSColorSpace.deviceRGB) else{
-            print("Error converting to generic rgb color space")
-            return
-        }
-        
-        let red = rgbColor.redComponent * 255
-        let redInt = Int(red.rounded())
-        let green = rgbColor.greenComponent * 255
-        let greenInt = Int(green.rounded())
-        let blue = rgbColor.blueComponent * 255
-        let blueInt = Int(blue.rounded())
-        
-        let rgbString: String = String(format: "%3.d, %3.d, %3.d", redInt, greenInt, blueInt)
-        let hexUpperString: String = String(format: "#%02X%02X%02X", redInt, greenInt, blueInt)
-        let hexLowerString: String = String(format: "#%02x%02x%02x", redInt, greenInt, blueInt)
-        let pasteboard = NSPasteboard.general
-        pasteboard.clearContents()
-        pasteboard.setString(rgbString, forType: .string)
+        copyLastSelectedColor()
         
         eyeDropperRunning = false
+    }
+    
+    func copyLastSelectedColor() {
+        let output: String = eyeDropperColor.getString()
+        
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(output, forType: .string)
     }
 }
 

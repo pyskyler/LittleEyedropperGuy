@@ -10,16 +10,16 @@ import SwiftUI
 
 struct MenuBarExtraView: View {
     
-    @Bindable var littleGuy: LittleGuy
-    @State private var useRGB = UserDefaults.standard.bool(forKey: "useRGB")
-    @State private var useHexUpper = UserDefaults.standard.bool(forKey: "useRGB")
-    @State private var useHexLower = UserDefaults.standard.bool(forKey: "useRGB")
-    @State private var useHexPound = UserDefaults.standard.bool(forKey: "useRGB")
+    @AppStorage("useRgb") var useRgb: Bool = true
+    @AppStorage("useHexPound") var useHexPound: Bool = true
+    @AppStorage("useHexUpper") var useHexUpper: Bool = true
+//    @Environment(LittleGuy.self) private var littleGuy
+    @State private var littleGuy = LittleGuy()
     
-    
-    var panel: LittleGuyPanel<LittleGuyView>
+    var panel: LittleGuyPanel = LittleGuyPanel(view: {LittleGuyView().environmentObject(littleGuy)}, contentRect: NSRect(origin: CGPoint(x: 600, y: 800), size: CGSize(width: 120, height: 120)))
     
     var body: some View {
+        @Bindable var littleGuy = littleGuy
 
         Toggle(isOn: $littleGuy.isOpen, label: {
             Text("Toggle Little Guy")
@@ -34,26 +34,32 @@ struct MenuBarExtraView: View {
             }
         })
         
+        Button(action: littleGuy.copyLastSelectedColor) {
+            Text("Copy Last Selected Color")
+        }
         
+
         Menu("Color Format") {
-            Toggle(isOn: Binding { littleGuy.colorOption == .rgb } set: { littleGuy.colorOption = $0 ? .rgb : .rgb}, label: {
-                Text("RGB (255, 255, 255)")
-            }).toggleStyle(.button)
-                
-            Toggle(isOn: Binding { littleGuy.colorOption == .hexUpper } set: { littleGuy.colorOption = $0 ? .hexUpper : .hexUpper}, label: {
-                Text("Hex Upper (#FFFFFF)")
-            }).toggleStyle(.button)
+            Picker("", selection: $useRgb) {
+                Text("RGB (255, 255, 255)").tag(true)
+                Text("Hex (\(littleGuy.hexFormatting))").tag(false)
+            }.labelsHidden()
+            
+            
+            if (!useRgb) {
+                Picker("Upper/Lowercase", selection: $useHexUpper) {
+                    Text("Uppercase").tag(true)
+                    Text("Lowercase").tag(false)
+                }
+                Picker("Use # Symbol", selection: $useHexPound) {
+                    Text("Yes").tag(true)
+                    Text("No").tag(false)
+                }
+            }
+        }.pickerStyle(.inline)
 
             
-            Toggle(isOn: Binding { littleGuy.colorOption == .hexLower } set: { littleGuy.colorOption = $0 ? .hexLower : .hexLower}, label: {
-                Text("Hex Lower (#ffffff)")
-            }).toggleStyle(.button)
-            
-            Divider()
-            Toggle(isOn: $useHexPound, label: {
-                Text("Include # in hex color")
-            }).toggleStyle(.button)
-        }
+
         Divider()
         Button("Quit") {
             NSApplication.shared.terminate(nil)

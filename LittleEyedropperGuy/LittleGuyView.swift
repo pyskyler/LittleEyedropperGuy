@@ -8,7 +8,9 @@
 import SwiftUI
 
 public struct LittleGuyView: View {
-    var littleGuy: LittleGuy
+    @Environment(LittleGuy.self) private var littleGuy
+    
+    
     public var body: some View {
         ZStack {
             Circle()
@@ -25,15 +27,25 @@ public struct LittleGuyView: View {
                 .fill(.clear)
                 .frame(width: 40, height: 60)
                 .onHover(perform: littleGuy.checkHoverForAnimation)
+                .onTapGesture(perform: littleGuy.tapped)
             
             Rectangle()
                 .fill(.clear)
                 .frame(width: 20, height: 10)
                 .offset(y:-20)
                 .onHover(perform: littleGuy.checkHoverForAnimation)
+                .onTapGesture(perform: littleGuy.tapped)
             
-            LittleGuyEyedropperButton(littleGuy: littleGuy)
-
+            LittleGuyEyedropperButton()
+            
+            HeartView()
+            
+//            if littleGuy.heartAnimation.isRunning {
+//                HeartView(littleGuy: littleGuy)
+//            }
+            
+            
+                
         }
         
        
@@ -43,7 +55,7 @@ public struct LittleGuyView: View {
 }
 
 #Preview {
-    LittleGuyView(littleGuy: LittleGuy())
+    LittleGuyView()
         .frame(width: 120, height: 120)
 }
 

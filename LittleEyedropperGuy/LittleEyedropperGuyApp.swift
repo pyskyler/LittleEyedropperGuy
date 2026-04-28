@@ -9,15 +9,22 @@ import SwiftUI
 
 @main
 struct LittleEyedropperGuyApp: App {
-    @State private var littleGuy = LittleGuy()
+    
+    
+    init() {
+        RegisterUserDefaults()
+    }
+    
     var body: some Scene {
-        let panel = LittleGuyPanel(view: {LittleGuyView(littleGuy: littleGuy)}, contentRect: NSRect(origin: CGPoint(x: 600, y: 800), size: CGSize(width: 120, height: 120)), littleGuy: littleGuy)
         
         MenuBarExtra(
             "Little Guy",
             systemImage: "cat"
-        ) { MenuBarExtraView(littleGuy: littleGuy, panel: panel) }
+        ) { MenuBarExtraView() }
 //        .menuBarExtraStyle(.window)
+        
+        
+            
         
     }
 }
